@@ -2,7 +2,10 @@ package yte.spring.mailsender;
 
 import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -28,7 +31,7 @@ public class MailUtil {
         javaMailSender.send(simpleMailMessage);
     }
 
-    public void sendEmailWithAttachmnet(SimpleMailMessage simpleMailMessage) throws MessagingException {
+    public void sendEmailWithAttachmnet(SimpleMailMessage simpleMailMessage) throws MessagingException, IOException, WriterException {
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
@@ -38,16 +41,13 @@ public class MailUtil {
         mimeMessageHelper.setText(simpleMailMessage.getText());
 
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
-        try {
-            qrCodeGenerator.generateQRCodeImage(simpleMailMessage.getSubject(), "C:\\Users\\kenan.aygoren\\Desktop\\kaygoren\\prop.png");
-        }catch (WriterException | IOException e){
-            e.printStackTrace();
-        }
+//        qrCodeGenerator.generateQRCodeImage(simpleMailMessage.getSubject(), "C:\\Users\\kenan.aygoren\\Desktop\\kaygoren\\qrcode.png");
+//        FileSystemResource file = new FileSystemResource(new File("C:\\Users\\kenan.aygoren\\Desktop\\kaygoren\\qrcode.png"));
+//        mimeMessageHelper.addAttachment("qrcode.png",file);
+        InputStreamSource inputStreamSource = new ByteArrayResource(qrCodeGenerator.getQRCodeImage("5398333332"));
 
 
-        FileSystemResource file = new FileSystemResource(new File("C:\\Users\\kenan.aygoren\\Desktop\\kaygoren\\prop.png"));
-        mimeMessageHelper.addAttachment("notes.jpg",file);
-
+        mimeMessageHelper.addAttachment("qrcode.png", inputStreamSource);
         javaMailSender.send(mimeMessage);
     }
 }

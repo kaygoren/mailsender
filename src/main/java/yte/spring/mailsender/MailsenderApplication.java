@@ -27,14 +27,8 @@ public class MailsenderApplication {
 		try {
 //			ctx.getBean(MailUtil.class).sendEmail(simpleMailMessage);
 			ctx.getBean(MailUtil.class).sendEmailWithAttachmnet(simpleMailMessage);
-		}catch (MessagingException e){
+		}catch (MessagingException | WriterException | IOException e){
 			e.printStackTrace();
 		}
-//		try {
-//			ctx.getBean(QRCodeGenerator.class).generateQRCodeImage("5398333332", "./myQRCode.png");
-//		}catch (WriterException | IOException e){
-//			e.printStackTrace();
-//		}
-
 	}
 }
